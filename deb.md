@@ -144,7 +144,6 @@ update-initramfs -u
 # Explicit exit from chroot
 # ----------------------------
 exit
-"
 
 # ----------------------------
 # Exit chroot, unmount, reboot
