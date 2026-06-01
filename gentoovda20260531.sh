@@ -75,6 +75,19 @@ chroot /mnt/gentoo /bin/bash <<'EOF'
 echo "============== Inside chroot **********************"
 source /etc/profile
 
+echo "********************** ZRAM **********************"
+zgrep ZRAM /proc/config.gz
+modprobe zram
+
+echo zstd > /sys/block/zram0/comp_algorithm
+echo 16G > /sys/block/zram0/disksize
+
+mkswap /dev/zram0
+swapon /dev/zram0
+
+echo "********************** ENDOF ZRAM **********************"
+
+
 echo "********************** starting emerge-webrsync **********************"
 emerge-webrsync
 echo "********************** webrsync done emerge-sync **********************"
@@ -83,8 +96,8 @@ emerge --sync
 ls /mnt/
 echo "********************** done emerge --sync --quiet **********************"
 
-#eselect profile set 44
-#eselect profile show
+eselect profile set 1
+eselect profile show
 
 PROFILE_NUM=$(eselect profile list | grep -F "default/linux/amd64/23.0 (stable)" | awk '{print $1}' | tr -d '[]')
 eselect profile set "$PROFILE_NUM"
@@ -155,22 +168,12 @@ emerge sudo
 emerge dwm
 emerge st
 
-echo "********************** ZRAM **********************"
-zgrep ZRAM /proc/config.gz
-modprobe zram
 
-echo zstd > /sys/block/zram0/comp_algorithm
-echo 8G > /sys/block/zram0/disksize
-
-mkswap /dev/zram0
-swapon /dev/zram0
-
-echo "********************** ENDOF ZRAM **********************"
 
 EOF
 # Out of Chroot
 ls /mnt/
-
+echo "********************** IF YOU SEE gentoo above chroot, type again /mnt/gentoo /bin/bash **********************"
 
 #cd /
 #umount -R /mnt
