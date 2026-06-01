@@ -74,18 +74,7 @@ echo "********************** Entering Chroot **********************"
 chroot /mnt/gentoo /bin/bash <<'EOF'
 echo "============== Inside chroot **********************"
 source /etc/profile
-
-echo "********************** ZRAM **********************"
-zgrep ZRAM /proc/config.gz
-modprobe zram
-
-echo zstd > /sys/block/zram0/comp_algorithm
-echo 16G > /sys/block/zram0/disksize
-
-mkswap /dev/zram0
-swapon /dev/zram0
-
-echo "********************** ENDOF ZRAM **********************"
+export PS1="(chroot) ${PS1}"
 
 
 echo "********************** starting emerge-webrsync **********************"
@@ -108,8 +97,8 @@ sed -i '/^MAKEOPTS=/a USE="-systemd -kde -gnome -bluetooth"' /etc/portage/make.c
 
 
 echo 'ACCEPT_LICENSE="*"' >> /etc/portage/make.conf
-emerge --ask --verbose --update --deep --changed-use @world
-
+# emerge --ask --verbose --update --deep --changed-use @world
+emerge --verbose --update --deep --changed-use @world
 
 ln -sf ../usr/share/zoneinfo/Europe/Istanbul /etc/localtime
 sed -i 's/^# en_US/en_US/' /etc/locale.gen
@@ -131,7 +120,10 @@ emerge sys-firmware/sof-firmware
 
 echo "sys-kernel/installkernel grub dracut" >> /etc/portage/package.use/installkernel
 emerge sys-kernel/installkernel
+
+
 emerge sys-kernel/gentoo-kernel-bin
+echo "********************** cat /usr/lib/modules/6* there now ==============================="
 
 echo "********************** FSTAB ==============================="
 echo '/dev/vda1       /boot/efi       vfat    defaults        0 2' >> /etc/fstab
@@ -153,6 +145,7 @@ emerge sys-boot/grub
 
 #mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 grub-install --efi-directory=/boot/efi --target=x86_64-efi
+
 grub-mkconfig -o /boot/grub/grub.cfg
 
 #cp /usr/lib/modules/6.18.32-p2-gentoo-dist/vmlinuz /boot/vmlinuz-6.18.32-p2-gentoo-dist
@@ -163,6 +156,18 @@ useradd -m -G wheel sk
 echo 'sk:sk' | chpasswd
 
 emerge sudo
+
+echo "********************** ZRAM **********************"
+zgrep ZRAM /proc/config.gz
+modprobe zram
+
+echo zstd > /sys/block/zram0/comp_algorithm
+echo 16G > /sys/block/zram0/disksize
+
+mkswap /dev/zram0
+swapon /dev/zram0
+
+echo "********************** ENDOF ZRAM **********************"
 
 #emerge --getbinpkg xorg-server
 emerge dwm
