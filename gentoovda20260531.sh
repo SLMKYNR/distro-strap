@@ -79,7 +79,7 @@ echo "********************** starting emerge-webrsync **********************"
 emerge-webrsync
 echo "********************** webrsync done emerge-sync **********************"
 ls /mnt/
-emerge --sync --quiet
+emerge --sync
 ls /mnt/
 echo "********************** done emerge --sync --quiet **********************"
 
