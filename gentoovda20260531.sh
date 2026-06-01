@@ -155,6 +155,18 @@ emerge sudo
 emerge dwm
 emerge st
 
+echo "********************** ZRAM **********************"
+zgrep ZRAM /proc/config.gz
+modprobe zram
+
+echo zstd > /sys/block/zram0/comp_algorithm
+echo 8G > /sys/block/zram0/disksize
+
+mkswap /dev/zram0
+swapon /dev/zram0
+
+echo "********************** ENDOF ZRAM **********************"
+
 EOF
 # Out of Chroot
 ls /mnt/
