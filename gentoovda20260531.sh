@@ -2,11 +2,13 @@
 # run script after root like below
 # sudo -s
 
-# cd ~/Downloads
-# cd /home/$USER/Downloads/
-# cd /home/gentoo/Downloads
+# git clone https://github.com/SLMKYNR/distro-strap.git
+# cd distro-strap
+# cat gentoovda20260531.sh | head -20
 # chmod +x gentoovda20260531.sh
 # ./gentoovda20260531.sh
+
+# cat gentoovda20260531.sh | tail -25
 
 
 
@@ -153,17 +155,9 @@ emerge sudo
 emerge dwm
 emerge st
 
-
 EOF
 # Out of Chroot
 ls /mnt/
-
-
-
-
-
-
-
 
 
 #cd /
