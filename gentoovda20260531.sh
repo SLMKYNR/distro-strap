@@ -99,6 +99,7 @@ sed -i '/^MAKEOPTS=/a USE="-systemd -kde -gnome -bluetooth"' /etc/portage/make.c
 echo 'ACCEPT_LICENSE="*"' >> /etc/portage/make.conf
 # emerge --ask --verbose --update --deep --changed-use @world
 emerge --verbose --update --deep --changed-use @world
+#emerge --depclean
 
 ln -sf ../usr/share/zoneinfo/Europe/Istanbul /etc/localtime
 sed -i 's/^# en_US/en_US/' /etc/locale.gen
@@ -111,7 +112,7 @@ echo "********************** BEF ENV **********************"
 env-update 
 echo "********************** BEF SOURCE **********************"
 source /etc/profile
-echo "********************** BEF LANG **********************"
+echo "********************** HERE CHROOT SIGN GONE **********************"
 echo $LANG
 
 echo "********************** AFTER LANG **********************"
@@ -148,7 +149,7 @@ grub-install --efi-directory=/boot/efi --target=x86_64-efi
 
 grub-mkconfig -o /boot/grub/grub.cfg
 
-#cp /usr/lib/modules/6.18.32-p2-gentoo-dist/vmlinuz /boot/vmlinuz-6.18.32-p2-gentoo-dist
+#cp /usr/lib/modules/6.18.33-p1-gentoo-dist/vmlinuz /boot/vmlinuz-6.18.33-p1-gentoo-dist
 #grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "********************** FINALIZING **********************"
@@ -169,11 +170,21 @@ swapon /dev/zram0
 
 echo "********************** ENDOF ZRAM **********************"
 
-#emerge --getbinpkg xorg-server
+
 emerge dwm
 emerge st
 
+#emerge --getbinpkg xorg-server
+emerge -q x11-apps/xinit
+emerge -q x11-wm/twm
+emerge -q x11-terms/xterm
+emerge -q x11-apps/xclock
+emerge elogind
+emerge xf86-video-vesa
+emerge xrandr
 
+sudo rc-service elogind start
+sudo rc-update add elogind default
 
 EOF
 # Out of Chroot
